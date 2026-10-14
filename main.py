@@ -1,7 +1,8 @@
 from getpass import getpass
 
 from auth import signup, login
-from database import get_transactions
+from database import get_transactions, track_spending
+from tabulate import tabulate
 
 
 def main():
@@ -13,7 +14,8 @@ def main():
         print("1. Sign Up")
         print("2. Login")
         print("3. View Transactions")
-        print("4. Exit")
+        print("4. Track Spending")
+        print("5. Exit")
 
         choice = input("Select an option: ")
 
@@ -50,11 +52,30 @@ def main():
             if not transactions:
                 print("No transactions found.")
             else:
+                headers = [ 
+                    'transaction_date', 
+                    'description',
+                    'payment_method', 
+                    'transaction_Id',
+                    'amount'    
+                ]
                 print("\nTransactions:")
-                for transaction in transactions:
-                    print(transaction)
+                print(tabulate(transactions, headers=headers, tablefmt='grid'))
 
-        elif choice == "4":
+        elif choice == '4':
+            if userId is None:
+                print("You must be logged in to view transactions.")
+                continue
+            
+            tracking = track_spending(userId)
+            if not tracking:
+                print("Error. Please come back later.")
+            else:
+                headers = ['Total Income', 'Total Expenses', 'Account Balance']
+                print("\nHere is a summary of your cash flow:")
+                print(tabulate(tracking, headers=headers, tablefmt='grid'))
+
+        elif choice == "5":
             print("Goodbye!")
             break
 
