@@ -57,3 +57,11 @@ def track_spending(user_id):
 
     finally:
         conn.close()
+
+def print_cash_flow(income, expenses):
+    data = {"Income": income, "Expenses": expenses}
+    bar = "█"
+    val = max(data.values())
+    for k, v in data.items():
+        bar_length = int((v / val) * 40)
+        print(f"\n{k.ljust(10)} {bar * bar_length} {v}")
