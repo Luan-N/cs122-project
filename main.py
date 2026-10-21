@@ -1,8 +1,13 @@
 from getpass import getpass
 
 from auth import signup, login
+<<<<<<< HEAD
 from database import get_transactions, track_spending
 from tabulate import tabulate
+=======
+from database import get_transactions
+from transactions import prompt_add_transaction, prompt_update_transaction
+>>>>>>> b444eee27405524f89665663aa55f0cb3e1ed9f9
 
 
 def main():
@@ -14,8 +19,14 @@ def main():
         print("1. Sign Up")
         print("2. Login")
         print("3. View Transactions")
+<<<<<<< HEAD
         print("4. Track Spending")
         print("5. Exit")
+=======
+        print("4. Add Transaction")
+        print("5. Update Transaction")
+        print("6. Exit")
+>>>>>>> b444eee27405524f89665663aa55f0cb3e1ed9f9
 
         choice = input("Select an option: ")
 
@@ -60,6 +71,7 @@ def main():
                     'amount'    
                 ]
                 print("\nTransactions:")
+<<<<<<< HEAD
                 print(tabulate(transactions, headers=headers, tablefmt='grid'))
 
         elif choice == '4':
@@ -76,6 +88,25 @@ def main():
                 print(tabulate(tracking, headers=headers, tablefmt='grid'))
 
         elif choice == "5":
+=======
+                print("Transaction ID | Amount | Category | Payment Method | Date | Description")
+                for transaction in transactions:
+                    print(transaction)
+
+        elif choice == "4":
+            if userId is None:
+                print("You must be logged in to add transactions.")
+                continue
+            prompt_add_transaction(userId)
+
+        elif choice == "5":
+            if userId is None:
+                print("You must be logged in to update transactions.")
+                continue
+            prompt_update_transaction(userId)
+
+        elif choice == "6":
+>>>>>>> b444eee27405524f89665663aa55f0cb3e1ed9f9
             print("Goodbye!")
             break
 
