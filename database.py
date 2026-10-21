@@ -2,7 +2,6 @@ from datetime import date
 
 import sqlitecloud
 from env import DATABASE_URL
-from tabulate import tabulate
 
 
 def get_db_connection():
@@ -70,21 +69,21 @@ def get_transactions(user_id):
     try:
         rows = conn.execute(
             """
-            SELECT transaction_date, description, payment_method, transaction_Id, amount 
+            SELECT transaction_id, amount, category, payment_method, transaction_date, description
             FROM transactions
             WHERE user_id = ?
             """,
             (user_id,)
         ).fetchall()
 
-<<<<<<< HEAD
         return rows
-    
+
     finally:
         conn.close()
 
+
 def track_spending(user_id):
-    ''' This method allow users to see  their income and expenses each month'''
+    '''Show total income, expenses, and balance for the user.'''
     conn = get_db_connection()
     try:
         income_row = conn.execute(
@@ -105,7 +104,7 @@ def track_spending(user_id):
 
         income = income_row[0] if income_row and income_row[0] is not None else 0
         expenses = expenses_row[0] if expenses_row and expenses_row[0] is not None else 0
-        
+
         balance = income + expenses
 
         return [[income, abs(expenses), balance]]
@@ -116,16 +115,12 @@ def track_spending(user_id):
 
     finally:
         conn.close()
-=======
-    rows = conn.execute(
-        """
-        SELECT transaction_id, amount, category, payment_method, transaction_date, description
-        FROM transactions
-        WHERE user_id = ?
-        """,
-        (user_id,)
-    ).fetchall()
 
-    conn.close()
-    return rows
->>>>>>> b444eee27405524f89665663aa55f0cb3e1ed9f9
+
+def print_cash_flow(income, expenses):
+    data = {"Income": income, "Expenses": expenses}
+    bar = "█"
+    val = max(data.values())
+    for k, v in data.items():
+        bar_length = int((v / val) * 40) if val else 0
+        print(f"\n{k.ljust(10)} {bar * bar_length} {v}")
