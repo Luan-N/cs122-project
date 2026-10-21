@@ -2,6 +2,7 @@ from getpass import getpass
 
 from auth import signup, login
 from database import get_transactions
+from transactions import prompt_add_transaction, prompt_update_transaction
 
 
 def main():
@@ -13,7 +14,9 @@ def main():
         print("1. Sign Up")
         print("2. Login")
         print("3. View Transactions")
-        print("4. Exit")
+        print("4. Add Transaction")
+        print("5. Update Transaction")
+        print("6. Exit")
 
         choice = input("Select an option: ")
 
@@ -51,10 +54,23 @@ def main():
                 print("No transactions found.")
             else:
                 print("\nTransactions:")
+                print("Transaction ID | Amount | Category | Payment Method | Date | Description")
                 for transaction in transactions:
                     print(transaction)
 
         elif choice == "4":
+            if userId is None:
+                print("You must be logged in to add transactions.")
+                continue
+            prompt_add_transaction(userId)
+
+        elif choice == "5":
+            if userId is None:
+                print("You must be logged in to update transactions.")
+                continue
+            prompt_update_transaction(userId)
+
+        elif choice == "6":
             print("Goodbye!")
             break
 
