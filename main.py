@@ -60,7 +60,7 @@ def main():
                 if not transactions:
                     print("No transactions found.")
                 else:
-                    headers = ["Transaction ID", "Amount", "Category", "Payment Method", "Date", "Description"]
+                    headers = ["Transaction ID", "Date", "Amount", "Category", "Payment Method", "Description"]
                     print("\nTransactions:")
                     print(tabulate(transactions, headers=headers, tablefmt="fancy_grid"))
 

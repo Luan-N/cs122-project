@@ -69,7 +69,7 @@ def get_transactions(user_id):
     try:
         rows = conn.execute(
             """
-            SELECT transaction_id, amount, category, payment_method, transaction_date, description
+            SELECT transaction_id, transaction_date, amount, category, payment_method, description
             FROM transactions
             WHERE user_id = ?
             """,
