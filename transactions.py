@@ -1,7 +1,7 @@
 from datetime import date
 from decimal import Decimal, InvalidOperation
 
-from database import add_transaction, get_transaction, update_transaction
+from database import add_transaction, get_transaction, update_transaction, delete_transaction
 
 
 def _prompt_transaction_fields(transaction=None):
@@ -100,7 +100,7 @@ def prompt_update_transaction(user_id):
             return
         try:
             transaction_id = int(value)
-            if not 0 < transaction_id <= 9223372036854775807:
+            if not 0 < transaction_id <= 9223372036854775807: # 0 < transaction_id <= 2^63 - 1
                 raise ValueError
             break
         except ValueError:
@@ -125,3 +125,47 @@ def prompt_update_transaction(user_id):
         print("Transaction updated.")
     else:
         print("Transaction not found for your account.")
+
+
+def prompt_delete_transaction(user_id):
+    while True:
+        value = input("Transaction ID to update (Enter to cancel): ").strip()
+        if not value:
+            return
+        try:
+            transaction_id = int(value)
+            if not 0 < transaction_id <= 9223372036854775807: # 0 < transaction_id <= 2^63 - 1
+                raise ValueError
+            break
+        except ValueError:
+            print("Enter a valid positive transaction ID.")
+    
+    try:
+        transaction = get_transaction(user_id, transaction_id)
+    except Exception as e:
+        print(f"Could not load transaction: {e}")
+        return
+    
+    if transaction is None:
+        print("Transaction not found for your account.")
+        return
+
+    try:
+        deleted = delete_transaction(user_id, transaction_id)
+    except Exception as e:
+        print(f"Error deleting transaction: {e}")
+        return 
+        
+    if deleted:
+        print("A transaction is deleted successfully.")
+    else:
+        print("Failed to delete the transaction.")
+
+def print_cash_flow(income, expenses):
+    data = {"Income": income, "Expenses": expenses}
+    bar = "█"
+    val = max(data.values())
+    for k, v in data.items():
+        bar_length = int((v / val) * 40) if val else 0
+        print(f"\n{k.ljust(10)} {bar * bar_length} {v}")
+

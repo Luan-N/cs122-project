@@ -1,7 +1,7 @@
-from datetime import date
-
 import sqlitecloud
 from env import DATABASE_URL
+from datetime import date
+import calendar
 
 
 def get_db_connection():
@@ -64,16 +64,25 @@ def update_transaction(user_id, transaction_id, amount, category,
 
 
 def get_transactions(user_id):
-    ''' This method shows record of transactions'''
+    """ This method shows record of transactions in a month """
+
+    today = date.today()
+    month = today.month
+    year = today.year
+
+    startDate = date(year, month, 1).strftime('%Y-%m-%d')
+    last_day = calendar.monthrange(year, month)[1]
+    endDate = date(year, month, last_day).strftime('%Y-%m-%d') 
+
     conn = get_db_connection()
     try:
         rows = conn.execute(
             """
-            SELECT transaction_id, transaction_date, amount, category, payment_method, description
+            SELECT transaction_id, transaction_date, category, payment_method, description, amount
             FROM transactions
-            WHERE user_id = ?
+            WHERE user_id = ? AND transaction_date BETWEEN ? AND ?
             """,
-            (user_id,)
+            (user_id, startDate, endDate)
         ).fetchall()
 
         return rows
@@ -96,7 +105,7 @@ def track_spending(user_id):
 
         expenses_row = conn.execute(
             """
-            SELECT SUM(amount) AS income
+            SELECT SUM(amount) AS expenses
             FROM transactions
             WHERE amount < 0 AND user_id = ?
             """, (user_id,)
@@ -116,11 +125,20 @@ def track_spending(user_id):
     finally:
         conn.close()
 
+def delete_transaction(user_id, transaction_id):
+    """ Delete the transaction from the database."""
 
-def print_cash_flow(income, expenses):
-    data = {"Income": income, "Expenses": expenses}
-    bar = "█"
-    val = max(data.values())
-    for k, v in data.items():
-        bar_length = int((v / val) * 40) if val else 0
-        print(f"\n{k.ljust(10)} {bar * bar_length} {v}")
+    conn = get_db_connection()
+    try:
+        rows = conn.execute(
+            """
+            DELETE FROM transactions
+            WHERE user_id = ? AND transaction_id = ?
+            """, (user_id, transaction_id)
+        )
+        conn.commit()
+        return rows.rowcount > 0
+
+    finally:
+        conn.close()
+

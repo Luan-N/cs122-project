@@ -1,11 +1,9 @@
 from getpass import getpass
-
 from tabulate import tabulate
-
 from auth import signup, login
-from database import get_transactions, track_spending, print_cash_flow
-from transactions import prompt_add_transaction, prompt_update_transaction
-
+from database import *
+from transactions import *
+from datetime import datetime
 
 def main():
     userId = None
@@ -17,8 +15,9 @@ def main():
         print("3. View Transactions")
         print("4. Add Transaction")
         print("5. Update Transaction")
-        print("6. Track Spending")
-        print("7. Exit")
+        print("6. Delete Transaction")
+        print("7. Track Spending")
+        print("8. Exit")
 
         choice = input("Select an option: ")
 
@@ -57,11 +56,14 @@ def main():
                     continue
 
                 transactions = get_transactions(userId)
+
+                current = datetime.now().strftime("%B %Y")
+
                 if not transactions:
                     print("No transactions found.")
                 else:
-                    headers = ["Transaction ID", "Date", "Amount", "Category", "Payment Method", "Description"]
-                    print("\nTransactions:")
+                    headers = ["Transaction_ID", "Date", "Category", "Payment Method", "Description", "Amount"]
+                    print(f"\nTransactions for {current}:")
                     print(tabulate(transactions, headers=headers, tablefmt="fancy_grid"))
 
             case "4":
@@ -78,6 +80,12 @@ def main():
 
             case "6":
                 if userId is None:
+                    print("You must be logged in to delete transactions.")
+                    continue
+                prompt_delete_transaction(userId)
+
+            case "7":
+                if userId is None:
                     print("You must be logged in to track spending.")
                     continue
 
@@ -91,7 +99,7 @@ def main():
                     income, expenses, balance = tracking[0]
                     print_cash_flow(income, expenses)
 
-            case "7":
+            case "8":
                 print("Goodbye!")
                 break
 
