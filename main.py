@@ -17,7 +17,8 @@ def main():
         print("5. Update Transaction")
         print("6. Delete Transaction")
         print("7. Track Spending")
-        print("8. Exit")
+        print("8. Search Transactions")
+        print("9. Exit")
 
         choice = input("Select an option: ")
 
@@ -100,6 +101,12 @@ def main():
                     print_cash_flow(income, expenses)
 
             case "8":
+                if userId is None:
+                    print("You must be logged in to track spending.")
+                    continue
+                prompt_search_transaction(user_id)              
+
+            case "9":
                 print("Goodbye!")
                 break
 

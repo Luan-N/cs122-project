@@ -142,3 +142,18 @@ def delete_transaction(user_id, transaction_id):
     finally:
         conn.close()
 
+def search_transaction(user_id, mdate):
+    """ Search the transaction on specific month from the database """
+
+    conn = get_db_connection()
+    try:
+        rows = conn.execute(
+            """
+            SELECT transaction_id, transaction_date, category, payment_method, description, amount
+            FROM transactions
+            WHERE user_id = ? AND transaction_date LIKE ?
+            """, (user_id, f"{mdate}%")
+        ).fetchall()
+        return rows
+    finally:
+        conn.close()

@@ -1,7 +1,7 @@
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
-
-from database import add_transaction, get_transaction, update_transaction, delete_transaction
+from tabulate import tabulate
+from database import add_transaction, get_transaction, update_transaction, delete_transaction, search_transaction
 
 
 def _prompt_transaction_fields(transaction=None):
@@ -168,4 +168,32 @@ def print_cash_flow(income, expenses):
     for k, v in data.items():
         bar_length = int((v / val) * 40) if val else 0
         print(f"\n{k.ljust(10)} {bar * bar_length} {v}")
+
+def prompt_search_transaction(user_id):
+    current = datetime.now().strftime("%Y-%m")
+    
+    while True:
+        prompt = input("\nChoose transactions of a month (Type: YYYY-MM): ").strip()
+        if len(prompt) != 7 or prompt[4] != '-':
+            print("Invalid. Please use YYYY-MM.")
+            continue
+        
+        if prompt > current:
+            print("Invalid search. Please try again!")
+            continue
+
+        try:
+            result = search_transaction(user_id, prompt)
+            transactions_list = list(result) if result else []
+            if not transactions_list:
+                print(f"\nNo transactions on {prompt} found in the database.")
+            else:
+                print(f"\nSucessfully found transactions for {prompt}:")
+                headers = ["Transaction_ID", "Date", "Category", "Payment Method", "Description", "Amount"]
+                print(tabulate(result, headers=headers, tablefmt="fancy_grid"))
+            break
+          
+        except Exception as e:
+            print(f"Error searching transactions: {e}")
+            return
 
