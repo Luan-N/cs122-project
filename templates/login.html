@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Log in | Budget Tracker{% endblock %}
+
+{% block content %}
+    <section class="auth-shell">
+        <div class="auth-copy">
+            <span class="eyebrow">PERSONAL FINANCE</span>
+            <h1>Make every dollar visible.</h1>
+            <p>Track spending, understand your habits, and make calmer decisions with a clearer view of your money.</p>
+        </div>
+
+        <form id="login-form" class="auth-form">
+            <h2>Welcome back</h2>
+            <p class="form-intro">Log in to see your financial picture.</p>
+        <label>
+            Username
+            <input id="username" name="username" required>
+        </label>
+        <label>
+            Password
+            <input id="password" name="password" type="password" required>
+        </label>
+        <button type="submit">Log in</button>
+        </form>
+
+        <p id="status" class="form-status"></p>
+        <p class="auth-switch">Need an account? <a href="{{ url_for('signup_page') }}">Sign up</a></p>
+    </section>
+
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+{% endblock %}

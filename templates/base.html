@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>{% block title %}Budget Tracker{% endblock %}</title>
+</head>
+<body>
+    <nav class="navbar">
+        <a class="brand" href="{{ url_for('home') }}">Budget Tracker</a>
+        <div class="nav-links">
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('dashboard_page') }}">Dashboard</a>
+                <button id="nav-logout" type="button">Log out</button>
+            {% else %}
+                <a href="{{ url_for('login_page') }}">Log in</a>
+                <a href="{{ url_for('signup_page') }}">Sign up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/nav.js') }}"></script>
+</body>
+</html>
